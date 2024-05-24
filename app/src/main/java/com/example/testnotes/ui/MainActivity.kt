@@ -2,53 +2,65 @@ package com.example.testnotes.ui
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.testnotes.R
 import com.example.testnotes.data.model.Note
 import com.example.testnotes.databinding.ActivityMainBinding
 import com.example.testnotes.ui.adapter.NoteAdapter
 import com.example.testnotes.viewModels.NoteViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val viewModel: NoteViewModel by viewModels()
-    private val adapter = NoteAdapter { note -> onNoteSelected(note) }
+    private var adapter = NoteAdapter(
+        onNoteSelected = { note -> onNoteSelected(note) },
+        onDeleteSelected = {
+
+                selectedNotes ->
+            selcetedNotid
+            binding.deleteButton.visibility = View.VISIBLE
+            binding.addNoteButton.visibility = View.GONE
+            binding.deleteButton.setOnClickListener {
+
+                deleteNotes(selectedNotes)
+                binding.deleteButton.visibility = View.GONE
+                binding.addNoteButton.visibility = View.VISIBLE
+            }
+        }
+    )
+    private var selcetedNotid: Int? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.viewModel = viewModel // Setting the viewModel in binding
-        binding.lifecycleOwner = this  // Setting the lifecycle owner
+        binding.viewModel = viewModel
+        binding.lifecycleOwner = this
+
+
+        binding.deleteButton.visibility = View.GONE
+        binding.addNoteButton.visibility = View.VISIBLE
+
 
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = adapter
 
-        /*viewModel.allNotes.observe(this, Observer { notes ->
-            notes?.let { adapter.submitList(it) }
-        })*/
-
         lifecycleScope.launch {
-            viewModel.allNotes.collectLatest {
-               adapter.submitList(it)
-            }
+            viewModel.allNotes.collectLatest { adapter?.submitList(it) }
         }
 
         binding.addNoteButton.setOnClickListener {
             val intent = Intent(this, NoteEntryActivity2::class.java)
             startActivity(intent)
         }
+
     }
 
     private fun onNoteSelected(note: Note) {
@@ -58,5 +70,10 @@ class MainActivity : AppCompatActivity() {
             putExtra("NOTE_DESCRIPTION", note.description)
         }
         startActivity(intent)
+    }
+
+
+    private fun deleteNotes(selectedNotes: Note) {
+        viewModel.deleteNotes(selectedNotes.id)
     }
 }

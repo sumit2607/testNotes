@@ -49,13 +49,20 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
         repository.update(note)
     }
 
-    fun delete(note: Note) = viewModelScope.launch(Dispatchers.IO) {
-        repository.delete(note)
+    // Function to delete a note
+// Function to delete notes by their IDs
+    fun deleteNotes(noteIds: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteNotes(noteIds)
+        }
     }
+
+
+
 
     fun saveNote() = viewModelScope.launch(Dispatchers.IO) {
         val newNote = Note(
-            id = 0,  // Change this appropriately if you're updating
+            // Change this appropriately if you're updating
             title = _title.value ?: "",
             description = _description.value ?: ""
         )

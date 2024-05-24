@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.testnotes.data.model.Note
 import com.example.testnotes.databinding.ItemNoteBinding
 
-class NoteAdapter(private val onNoteSelected: (Note) -> Unit) :
+class NoteAdapter(private val onNoteSelected: (Note) -> Unit ,private val onDeleteSelected: (Note) -> Unit) :
     ListAdapter<Note, NoteAdapter.NoteViewHolder>(NoteDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NoteViewHolder {
@@ -29,6 +29,11 @@ class NoteAdapter(private val onNoteSelected: (Note) -> Unit) :
                 val position = adapterPosition
                 if (position != RecyclerView.NO_POSITION) {
                     onNoteSelected(getItem(position))
+                }
+            }
+            binding.checkBox.setOnClickListener {
+                if (binding.checkBox.isChecked){
+                    onDeleteSelected(getItem(position))
                 }
             }
         }

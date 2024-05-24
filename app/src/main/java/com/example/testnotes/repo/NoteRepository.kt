@@ -21,7 +21,8 @@ class NoteRepository(private val noteDao: NoteDao) {
         noteDao.update(note)
     }
 
-    suspend fun delete(note: Note) {
-        noteDao.delete(note)
+    // Function to delete notes by their IDs
+    suspend fun deleteNotes(noteIds: Int) {
+        noteDao.deleteNotesByIds(noteIds)
     }
 }
