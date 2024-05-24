@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:hint="Title"
-            android:text="@={viewModel.title}" />
+            android:text="@{viewModel.title}" />
 
         <EditText
             android:id="@+id/noteDescription"
@@ -28,6 +28,6 @@
             android:layout_below="@id/noteTitle"
             android:layout_margin="16dp"
             android:hint="Description"
-            android:text="@={viewModel.description}" />
+            android:text="@{viewModel.description}" />
     </RelativeLayout>
 </layout>

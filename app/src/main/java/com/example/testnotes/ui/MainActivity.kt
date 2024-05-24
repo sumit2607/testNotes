@@ -15,6 +15,7 @@ import com.example.testnotes.ui.adapter.NoteAdapter
 import com.example.testnotes.viewModels.NoteViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -34,9 +35,15 @@ class MainActivity : AppCompatActivity() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
         binding.recyclerView.adapter = adapter
 
-        viewModel.allNotes.observe(this, Observer { notes ->
+        /*viewModel.allNotes.observe(this, Observer { notes ->
             notes?.let { adapter.submitList(it) }
-        })
+        })*/
+
+        lifecycleScope.launch {
+            viewModel.allNotes.collectLatest {
+               adapter.submitList(it)
+            }
+        }
 
         binding.addNoteButton.setOnClickListener {
             val intent = Intent(this, NoteEntryActivity2::class.java)

@@ -4,6 +4,7 @@ package com.example.testnotes.viewModels
 
 
 import android.app.Application
+import androidx.databinding.InverseMethod
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -12,12 +13,13 @@ import com.example.testnotes.data.model.Note
 import com.example.testnotes.data.room.NoteDatabase
 import com.example.testnotes.repo.NoteRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class NoteViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: NoteRepository
-    val allNotes: LiveData<List<Note>>
+    val allNotes: Flow<List<Note>>
 
     private val _title = MutableLiveData<String>()
     val title: LiveData<String> get() = _title
